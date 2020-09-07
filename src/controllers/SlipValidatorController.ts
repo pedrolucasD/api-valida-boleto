@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import rangeDates from '../rangeDates.json'
 
 export const BankSlipValidator = (request: Request, response: Response) => {
   const { slipNumber } = request.params
@@ -107,7 +108,9 @@ export const BankSlipValidator = (request: Request, response: Response) => {
 
   function validateDate (dateFactor) {
     var sumDateFactor = 0
-
+    const now = new Date()
+    const baseDate = new Date(rangeDates[0].base)
+    
     for (var i = 0; i < dateFactor.length; i++) {
       if ( i === 0 ) {
         sumDateFactor += dateFactor[i] - 1    
@@ -116,9 +119,19 @@ export const BankSlipValidator = (request: Request, response: Response) => {
       }
     }
 
-    const now = new Date()
+    const dueDate = new Date(baseDate.setDate(baseDate.getDate() + (sumDateFactor*1))) 
 
-    return sumDateFactor
+    if(now < dueDate) {
+      return ({
+        dueDate,
+        "message": "Boleto a vencer"
+      })
+    } else {
+      return ({
+        dueDate,
+        "message": "Boleto vencido"
+      })
+    }  
   }
 
   console.log(validateDate(dateFactor))
