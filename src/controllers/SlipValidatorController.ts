@@ -1,13 +1,13 @@
 import { Request, Response } from 'express'
 
-export const slipValidator = (request: Request, response: Response) => {
+export const BankSlipValidator = (request: Request, response: Response) => {
   const { slipNumber } = request.params
   const splitNumber = slipNumber.split("")
 
   if(splitNumber.length < 47){
     return response.json("Quantidade de caracteres é menor que o esperado")
   } else {
-    console.log("This slip number is valid")
+    console.log("Quantidade de caracteres é válida")
   }
 
   const block1 = [
@@ -60,8 +60,6 @@ export const slipValidator = (request: Request, response: Response) => {
   const DVblock3 = [
     splitNumber[31]
   ]
-
-  console.log(splitNumber[31])
   
   const DVBarCode = [
     splitNumber[32]
@@ -106,6 +104,24 @@ export const slipValidator = (request: Request, response: Response) => {
     }
     return false
   }
+
+  function validateDate (dateFactor) {
+    var sumDateFactor = 0
+
+    for (var i = 0; i < dateFactor.length; i++) {
+      if ( i === 0 ) {
+        sumDateFactor += dateFactor[i] - 1    
+      } else {
+        sumDateFactor += dateFactor[i]    
+      }
+    }
+
+    const now = new Date()
+
+    return sumDateFactor
+  }
+
+  console.log(validateDate(dateFactor))
   
   var ValidateDV1 = validateDV(block1, DVblock1)
   var ValidateDV2 = validateDV(block2, DVblock2)
