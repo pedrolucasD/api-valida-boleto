@@ -1,14 +1,17 @@
 import { Request, Response } from 'express'
+import StringMask from 'string-mask'
 import rangeDates from '../rangeDates.json'
 
 export const BankSlipValidator = (request: Request, response: Response) => {
   const { slipNumber } = request.params
   const splitNumber = slipNumber.split("")
 
-  if(splitNumber.length < 47){
-    return response.json("Quantidade de caracteres é menor que o esperado")
-  } else {
-    console.log("Quantidade de caracteres é válida")
+  if(splitNumber.length != 47){
+    return response.json({
+      "slipNumber": slipNumber,
+      "validNumber": false,
+      "message": "Incorrect number of characters"  
+    })
   }
 
   const block1 = [
@@ -111,37 +114,65 @@ export const BankSlipValidator = (request: Request, response: Response) => {
     const now = new Date()
     const baseDate = new Date(rangeDates[0].base)
     
-    for (var i = 0; i < dateFactor.length; i++) {
+    for ( var i = 0; i < dateFactor.length; i++ ) {
       if ( i === 0 ) {
         sumDateFactor += dateFactor[i] - 1    
       } else {
         sumDateFactor += dateFactor[i]    
       }
     }
+    
+    const dueDate = new Date(baseDate.setDate(baseDate.getDate() + (sumDateFactor*1)))
 
-    const dueDate = new Date(baseDate.setDate(baseDate.getDate() + (sumDateFactor*1))) 
-
-    if(now < dueDate) {
+    if ( now < dueDate ) {
       return ({
         dueDate,
-        "message": "Boleto a vencer"
+        "message": "On time"
       })
     } else {
       return ({
         dueDate,
-        "message": "Boleto vencido"
+        "message": "Overdue"
       })
     }  
   }
 
-  console.log(validateDate(dateFactor))
-  
-  var ValidateDV1 = validateDV(block1, DVblock1)
-  var ValidateDV2 = validateDV(block2, DVblock2)
-  var ValidateDV3 = validateDV(block3, DVblock3)
+  function validateValue(value) {
+    var sumValue = 0
+    
+    for ( var i = 0; i < value.length; i++ ) {
+        sumValue += value[i]
+    }
+    sumValue *= 1
 
-  if ( ValidateDV1 === true && ValidateDV2 === true && ValidateDV3 === true) {
-    return response.json("Código Válido")
-    } 
-  return response.json("Código Inválido")
+    var formatter = new StringMask('#.##0,00', {reverse: true});
+    var result = formatter.apply(sumValue)
+
+    return result
+  }
+
+
+
+  const DV1 = validateDV(block1, DVblock1)
+  const DV2 = validateDV(block2, DVblock2)
+  const DV3 = validateDV(block3, DVblock3)
+  const slipDate = validateDate(dateFactor)
+  const slipValue = validateValue(value)
+  
+  
+  if ( DV1 === true && DV2 === true && DV3 === true) {
+    return response.json({
+      "slipNumber": slipNumber,
+      "validNumber": true,
+      "slipValue": slipValue,
+      "dueDate": slipDate.dueDate,
+      "message": slipDate.message
+    })
+  } else {
+    return response.json({
+      "slipNumber": slipNumber,
+      "validNumber": false,
+      "message": "Invalid number"
+    })
+  }
 }
