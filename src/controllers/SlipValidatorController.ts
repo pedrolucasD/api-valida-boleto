@@ -2,19 +2,20 @@ import { Request, Response } from 'express'
 import StringMask from 'string-mask'
 import rangeDates from '../rangeDates.json'
 
+// Get Bank Slip Validation
 export const BankSlipValidator = (request: Request, response: Response) => {
   const { slipNumber } = request.params
   const splitNumber = slipNumber.split("")
 
   if(splitNumber.length != 47){
-    return response.json({
+    return response.status(400).json({
       "slipNumber": slipNumber,
       "validNumber": false,
       "message": "Incorrect number of characters"  
     })
   }
 
-  const block1 = [
+  const bloc1 = [
     splitNumber[8],
     splitNumber[7],
     splitNumber[6],
@@ -26,11 +27,11 @@ export const BankSlipValidator = (request: Request, response: Response) => {
     splitNumber[0]
   ]
   
-  const DVblock1 = [
+  const DVbloc1 = [
     splitNumber[9]
   ]
   
-  const block2 = [
+  const bloc2 = [
     splitNumber[19],
     splitNumber[18],
     splitNumber[17],
@@ -43,11 +44,11 @@ export const BankSlipValidator = (request: Request, response: Response) => {
     splitNumber[10]
   ]
   
-  const DVblock2 = [
+  const DVbloc2 = [
     splitNumber[20]
   ]
   
-  const block3 = [
+  const bloc3 = [
     splitNumber[30],
     splitNumber[29],
     splitNumber[28],
@@ -61,7 +62,7 @@ export const BankSlipValidator = (request: Request, response: Response) => {
 
   ]
   
-  const DVblock3 = [
+  const DVbloc3 = [
     splitNumber[31]
   ]
   
@@ -89,21 +90,21 @@ export const BankSlipValidator = (request: Request, response: Response) => {
     splitNumber[46]
   ]
   
-  function validateDV (block, dv) {
-    var sumBlock = 0
+  function validateDV (bloc, dv) {
+    var sumbloc = 0
 
-    for (var i = 0; i < block.length; i++) {
+    for (var i = 0; i < bloc.length; i++) {
       if ( i % 2 === 0 ) {
-        block[i] *= 2       
-        if (block[i] >= 10) {
-          block[i] = ((block[i] - block[i]%10)/10)+block[i]%10
+        bloc[i] *= 2       
+        if (bloc[i] >= 10) {
+          bloc[i] = ((bloc[i] - bloc[i]%10)/10)+bloc[i]%10
         }   
       } else {
-        block[i] *= 1
+        bloc[i] *= 1
       }
-      sumBlock += block[i]
+      sumbloc += bloc[i]
     }
-    if ((10 - (sumBlock%10)) === parseInt(dv[0])) {
+    if ((10 - (sumbloc%10)) === parseInt(dv[0])) {
       return true
     }
     return false
@@ -151,9 +152,9 @@ export const BankSlipValidator = (request: Request, response: Response) => {
     return result
   }
 
-  const DV1 = validateDV(block1, DVblock1)
-  const DV2 = validateDV(block2, DVblock2)
-  const DV3 = validateDV(block3, DVblock3)
+  const DV1 = validateDV(bloc1, DVbloc1)
+  const DV2 = validateDV(bloc2, DVbloc2)
+  const DV3 = validateDV(bloc3, DVbloc3)
   const slipDate = validateDate(dateFactor)
   const slipValue = validateValue(value)
   
@@ -167,7 +168,7 @@ export const BankSlipValidator = (request: Request, response: Response) => {
       "message": slipDate.message
     })
   } else {
-    return response.json({
+    return response.status(400).json({
       "slipNumber": slipNumber,
       "validNumber": false,
       "message": "Invalid number"

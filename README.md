@@ -47,10 +47,10 @@ http://localhost:3333/swagger/
 # Features
 - [x] Estrutura do projeto
 - [x] Endpoint para validação de Título Bancário
-- [ ] Validar valores acima de 99.999.999,99
-- [ ] Validar moeda
+  - [ ] Validar valores acima de 99.999.999,99
+  - [ ] Validar moeda
 - [ ] Endpoint para validação de Título de Pagamentos de Concessionárias
-- [ ] Configuração do Swagger
+- [x] Configuração do Swagger
 - [ ] Refatorar
 
 # Informações importantes

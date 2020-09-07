@@ -1,0 +1,89 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Slip Validator API",
+    "description": "A API developed to validate slips"
+  },
+  "host": "localhost:3333",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "Bank Slip Validator",
+      "description": "Everything about Bank Slip Validator"
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/bsvalidate/{slipNumber}": {
+      "parameters": [
+        {
+          "name": "slipNumber",
+          "in": "path",
+          "required": true,
+          "description": "Number of slip we want validate",
+          "type": "number"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Bank Slip Validator"
+        ],
+        "summary": "Get Bank Slip Validation",
+        "responses": {
+          "200": {
+              "description": "OK",
+              "schema": {
+                "$ref": "#/definitions/ValidResponse"
+              }
+          },
+          "400": {
+            "description": "FAILED",
+            "schema": {
+              "$ref": "#/definitions/InvalidResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ValidResponse": {
+      "type": "object",
+      "properties": {
+        "slipNumber": {
+          "type": "string"
+        },
+        "validNumber": {
+          "type": "boolean"
+        },
+        "slipValue": {
+          "type": "string"
+        },
+        "dueDate": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "InvalidResponse": {
+      "type": "object",
+      "properties": {
+        "slipNumber": {
+          "type": "string"
+        },
+        "validNumber": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    }
+
+  }
+}
