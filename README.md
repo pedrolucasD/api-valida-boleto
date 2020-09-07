@@ -46,10 +46,15 @@ http://localhost:3333/swagger/
 
 # Features
 - [x] Estrutura do projeto
-- [x] Endpoint Valida Título Bancário
-- [ ] Endpoint Valida Título de Pagamentos de Concessionárias
+- [x] Endpoint para validação de Título Bancário
+- [ ] Validar valores acima de 99.999.999,99
+- [ ] Validar moeda
+- [ ] Endpoint para validação de Título de Pagamentos de Concessionárias
 - [ ] Configuração do Swagger
 - [ ] Refatorar
+
+# Informações importantes
+Até o presente momento, de acordo com as features listadas acima, a API valida apenas Titulos Bancários nacionais (BR) com valores até R$ 99.999.999,99.
 
 # Autor
 Pedro Soares

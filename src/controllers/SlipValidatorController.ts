@@ -151,8 +151,6 @@ export const BankSlipValidator = (request: Request, response: Response) => {
     return result
   }
 
-
-
   const DV1 = validateDV(block1, DVblock1)
   const DV2 = validateDV(block2, DVblock2)
   const DV3 = validateDV(block3, DVblock3)
