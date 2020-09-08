@@ -55,6 +55,7 @@ http://localhost:3333/swagger/
 
 # Informações importantes
 Até o presente momento, de acordo com as features listadas acima, a API valida apenas Titulos Bancários nacionais (BR) com valores até R$ 99.999.999,99.
+Documentação disponibilizada pela [FEBRABAN](http://www.febraban.org.br) usada como referência no desenvolvimento.
 
 # Autor
 Pedro Soares
